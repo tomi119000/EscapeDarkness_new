@@ -26,6 +26,7 @@ public class RoomManager : MonoBehaviour
         {
             StartKeysPosition(); //キーを初回配置するメソッド
             positioned = true; //初回配置済にする
+            StartItemsPosition(); 
         }
     }
 
@@ -35,7 +36,7 @@ public class RoomManager : MonoBehaviour
         //受け皿が配列の場合は、FindGameObjectsWithTag (Objects :"s"が付く）
         int rand = Random.Range(1, keySpots.Length+1); //1~3までの数字をランダム生成
 
-        //全スポットをチェックしに行く
+        //全てのkey1のスポットをチェックしに行く
         foreach(GameObject spots in keySpots)
         {
             // Check if the number extracted is the same as randomly generated number(rand)
@@ -47,6 +48,41 @@ public class RoomManager : MonoBehaviour
                 key1PositionNumber = rand; 
 
             }
+        }
+
+        //Key2, Key3の対象スポット
+        GameObject KeySpot;
+        GameObject obj; //生成したKey2, Key3が入る予定
+
+        //Key2スポットの取得
+        KeySpot = GameObject.FindGameObjectWithTag("KeySpot2");
+        //Keyの生成とobjへの格納
+        obj = Instantiate(key, KeySpot.transform.position, Quaternion.identity);
+        obj.GetComponent<KeyData>().keyType = KeyType.key2;
+
+        //Key3スポットの取得
+        KeySpot = GameObject.FindGameObjectWithTag("KeySpot3");
+        //Keyの生成とobjへの格納
+        obj = Instantiate(key, KeySpot.transform.position, Quaternion.identity);
+        obj.GetComponent<KeyData>().keyType = KeyType.key3;
+    }
+
+    void StartItemsPosition()
+    {
+        GameObject[] itemSpots = GameObject.FindGameObjectsWithTag("ItemSpot");
+        
+        for(int i=0; i<items.Length; i++)
+        {
+            //ランダムな数字の取得
+            int rand = Random.Range(1, itemSpots.Length + 1); 
+            //ただし、アイテム割り振り済の番号を引いたら、ランダム引き直し
+
+            //スポットの全チェック（ランダム値とスポット番号の一致）
+            //一致していれば、そこにアイテムを生成
+            
+            //どのスポット番号がどのアイテムに割り当てられているのかを記録
+
+            //生成したアイテムに識別番号を割り振っていく
         }
     }
 
