@@ -13,17 +13,17 @@ public class GameManager : MonoBehaviour
 {
     public static GameState gameState;
 
-    public static bool[] doorsOpenedState;
+    public static bool[] doorsOpenedState = { false, false, false };
     public static int key1; //key1の持ち数
     public static int key2;
     public static int key3;
-    public static bool[] KeysPickedState;
+    public static bool[] KeysPickedState = { false, false, false };
     public static int bill = 10;
-    public static bool[] itemsPickedState;
+    public static bool[] itemsPickedState = { false, false, false, false, false };
 
     static public bool hasSpotLight; //スポットライトを所持しているかどうか
 
-    public static int playerHP =100; //PlayerのHP
+    public static int playerHP =3; //PlayerのHP
     
     // Start is called once before the first execution of Update after the MonoBehaviour is created
 
