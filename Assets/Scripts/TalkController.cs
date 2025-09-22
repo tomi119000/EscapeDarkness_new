@@ -21,7 +21,7 @@ public class TalkController : MonoBehaviour
         talkPanel = canvas.transform.Find("TalkPanel").gameObject;
         //talkPanelの子であるNemeText（これはTextMeshProUGUIコンポーネント）
         nameText = talkPanel.transform.Find("NameText").GetComponent< TextMeshProUGUI>();
-        messageText = talkPanel.transform.Find("Messagetext").GetComponent<TextMeshProUGUI>();
+        messageText = talkPanel.transform.Find("MessageText").GetComponent<TextMeshProUGUI>();
 
     }
 
@@ -54,10 +54,13 @@ public class TalkController : MonoBehaviour
             nameText.text = message.msgArray[i].name;
             messageText.text = message.msgArray[i].message;
 
-            //E keyが押されてない間(!)、何もしない
+            //0.1sec待つ（= yield returnに戻る）
+            yield return new WaitForSecondsRealtime(0.1f);
+
+            //E keyが押されてない間(!)、何もしない =yield returnに戻る
             while(!Input.GetKeyDown(KeyCode.E))
             {
-                yield return null; //何もしない
+                yield return null; //１フレーム何もしない
             }
         }
 
