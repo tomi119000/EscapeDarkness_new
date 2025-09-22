@@ -8,6 +8,9 @@ public class RoomManager : MonoBehaviour
 
     public GameObject[] items = new GameObject[5]; //Array of Prefabs of items 
     public GameObject room; //Prefab of room
+    
+    public MessageData[] messages; //配置したドアに割り振るScritableObject
+
     public GameObject dummyDoor; //Prefab of Dummy door
     public GameObject key;  //Prefab of key
 
@@ -25,6 +28,7 @@ public class RoomManager : MonoBehaviour
         if(!positioned) //！でfalseの場合
         {
             StartKeysPosition(); //キーを初回配置するメソッド
+            StartDoorsPosition();
             positioned = true; //初回配置済にする
             StartItemsPosition(); 
         }
@@ -86,9 +90,46 @@ public class RoomManager : MonoBehaviour
         }
     }
 
-    // Update is called once per frame
-    void Update()
+    void StartDoorsPosition()
     {
-        
+        //全スポットの取得
+        GameObject[] roomSpots = GameObject.FindGameObjectsWithTag("RoomSpot");
+
+        //出入口（鍵１～鍵３の3つの出入口）の分だけ繰り返し
+        for(int i=0; i< doorsPositionNumber.Length; i++)
+        {
+            int rand; //ランダムな数の受け皿
+            bool unique; //ユニークかどうかのフラグ
+
+            do //絶対1回目を実施する
+            {
+                unique = true; //問題なければそのままループを抜ける予定
+                rand = Random.Range(1, (roomSpots.Length + 1));
+
+                //既にランダムに取得した番号がどこかのスポットに割り当てられていないか
+                //doorsPositionNumber配列の状況を全点検
+                foreach(int numbers in doorsPositionNumber)
+                {
+                    if(numbers == rand)
+                    {
+                        unique = false;
+                        break;
+                    }
+                }
+            } while (!unique);
+
+            foreach(GameObject spots in roomSpots)
+            {
+                if (spots.GetComponent<RoomSpot>().spotNum ==rand)
+                {
+                    GameObject obj = Instantiate(
+                        room,
+                        spots.transform.position,
+                        Quaternion.identity
+                        );
+                }
+
+            }
+        }
     }
 }

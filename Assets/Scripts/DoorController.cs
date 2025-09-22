@@ -1,4 +1,5 @@
-﻿using TMPro;
+﻿using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class DoorController : MonoBehaviour
@@ -31,7 +32,93 @@ public class DoorController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if(isPlayerInRange && !isTalk && Input.GetKeyDown(KeyCode.E))
+        {
+            StartConversation();
+        }
+    }
+
+    void StartConversation()
+    {
+        isTalk = true; //talk中フラグON
+        GameManager.gameState = GameState.talk; //gameState is talk
+        talkPanel.SetActive(true);
+        nameText.text = message.msgArray[0].name;
+        messageText.text = message.msgArray[0].message;
+
+        Time.timeScale = 0; //ゲーム進行をストップ
+        StartCoroutine(TalkProcess()); //Talk Processコルーチン発動
+    }
+
+    // TalkProcessコルーチンの設計
+    IEnumerator TalkProcess()
+    {
+        //フラッシュ入力阻止のため一瞬止める
+        yield return new WaitForSecondsRealtime(0.1f); 
+
+        while(!Input.GetKeyDown(KeyCode.E))
+        {
+            yield return null; //Eキーが押されるまで何もしない
+        }
+
+        bool nextTalk = false; //トークをさらに展開するかどうか
+
+        switch(roomData.roomName)
+        {
+            case "fromRoom1":
+                if(GameManager.key1 > 0)
+                {
+                    GameManager.key1--; //鍵の数を減らす
+                    nextTalk = true;
+                    GameManager.doorsOpenedState[0] = true; 
+                }
+                break;
+
+            case "fromRoom2":
+                if (GameManager.key2 > 0)
+                {
+                    GameManager.key2--; //鍵の数を減らす
+                    nextTalk = true;
+                    GameManager.doorsOpenedState[1] = true;
+                }
+                break;
+
+            case "fromRoom3":
+                if (GameManager.key3 > 0)
+                {
+                    GameManager.key3--; //鍵の数を減らす
+                    nextTalk = true;
+                    GameManager.doorsOpenedState[2] = true;
+                }
+                break;
+        }
+
+        if(nextTalk)
+        {
+            // 開錠したというメッセージを表示
+            nameText.text = message.msgArray[1].name;
+            messageText.text = message.msgArray[1].message;
+
+            yield return new WaitForSecondsRealtime(0.1f); 
+
+            while(!Input.GetKeyDown(KeyCode.E))
+            {
+                yield return null;
+            }
+
+            roomData.openedDoor = true;
+            roomData.DoorOpenCheck(); 
+        }
+
+        EndConversation(); 
+    }
+
+    void EndConversation()
+    {
+        talkPanel.SetActive(false); 
+        GameManager.gameState = GameState.playing;
+        isTalk = false;
+        Time.timeScale = 1.0f; //ゲーム進行を戻す
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
