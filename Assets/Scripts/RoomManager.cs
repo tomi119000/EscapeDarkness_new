@@ -184,17 +184,17 @@ public class RoomManager : MonoBehaviour
             }
         }
         //ダミードア扉の生成
-        foreach(GameObject spots in roomSpots)
+        foreach (GameObject spots in roomSpots)
         {
             //既に配置済かどうか
             bool match = false;
 
-            foreach(int doorNum in doorsPositionNumber)
+            foreach (int doorNum in doorsPositionNumber)
             {
-                if(spots.GetComponent<RoomSpot>().spotNum ==doorNum)
+                if (spots.GetComponent<RoomSpot>().spotNum == doorNum)
                 {
                     match = true;
-                    break; 
+                    break;
                 }
             }
 
@@ -263,90 +263,89 @@ public class RoomManager : MonoBehaviour
 
             obj.GetComponent<KeyData>().keyType = KeyType.key3;
         }
+    }
+    void LoadItemsPosition()
+    {
+        GameObject[] itemSpots = GameObject.FindGameObjectsWithTag("ItemSpot");
 
-        void LoadItemsPosition()
+        for (int i = 0; i < items.Length; i++)
         {
-            GameObject[] itemSpots = GameObject.FindGameObjectsWithTag("ItemSpot");
-
-            for (int i = 0; i < items.Length; i++)
+            if (!GameManager.itemsPickedState[i])
             {
-                if (!GameManager.itemsPickedState[i])
+                foreach (GameObject spots in itemSpots)
                 {
-                    foreach (GameObject spots in itemSpots)
+                    //スポットの全チェック（ランダム値とスポット番号の一致）
+                    //一致していれば、そこにアイテムを生成
+                    if (spots.GetComponent<ItemSpot>().spotNum == itemsPositionNumber[i])
                     {
-                        //スポットの全チェック（ランダム値とスポット番号の一致）
-                        //一致していれば、そこにアイテムを生成
-                        if (spots.GetComponent<ItemSpot>().spotNum == itemsPositionNumber[i])
-                        {
-                            GameObject obj = Instantiate(
+                        GameObject obj = Instantiate(
                                 items[i],
                                 spots.transform.position,
                                 Quaternion.identity);
 
-                            //生成したアイテムに識別番号を割り振っていく
-                            if (obj.CompareTag("Bill"))
-                            {
-                                obj.GetComponent<BillData>().itemNum = i;
-                            }
-                            else
-                            {
-                                obj.GetComponent<DrinkData>().itemNum = i;
-                            }
+                        //生成したアイテムに識別番号を割り振っていく
+                        if (obj.CompareTag("Bill"))
+                        {
+                            obj.GetComponent<BillData>().itemNum = i;
+                        }
+                        else
+                        {
+                            obj.GetComponent<DrinkData>().itemNum = i;
                         }
                     }
                 }
             }
         }
+    }
 
-        void LoadDoorsPosition()
+    void LoadDoorsPosition()
+    {
+        //全スポットの取得
+        GameObject[] roomSpots = GameObject.FindGameObjectsWithTag("RoomSpot");
+
+        for (int i = 0; i < doorsPositionNumber.Length; i++)
         {
-            //全スポットの取得
-            GameObject[] roomSpots = GameObject.FindGameObjectsWithTag("RoomSpot");
 
-            for (int i = 0; i < doorsPositionNumber.Length; i++)
+            foreach (GameObject spots in roomSpots)
             {
-
-                foreach (GameObject spots in roomSpots)
+                if (spots.GetComponent<RoomSpot>().spotNum == doorsPositionNumber[i])
                 {
-                    if (spots.GetComponent<RoomSpot>().spotNum == doorsPositionNumber[i])
-                    {
-                        GameObject obj = Instantiate(
+                    GameObject obj = Instantiate(
                             room,
                             spots.transform.position,
                             Quaternion.identity
                             );
 
-                        //生成したドアのセッティング
-                        DoorSetting(
-                            obj, "fromRoom" + (i + 1),
-                            "Room" + (i + 1),
-                            "Main",
-                            GameManager.doorsOpenedState[i], //i番目のドア開錠情報
-                            DoorDirection.down,
-                            messages[i]
-                            );
-                    }
-
+                    //生成したドアのセッティング
+                    DoorSetting(
+                        obj, "fromRoom" + (i + 1),
+                        "Room" + (i + 1),
+                        "Main",
+                        GameManager.doorsOpenedState[i], //i番目のドア開錠情報
+                        DoorDirection.down,
+                        messages[i]
+                        );
                 }
+
             }
-            //ダミードア扉の生成
-            foreach (GameObject spots in roomSpots)
+        }
+        //ダミードア扉の生成
+        foreach (GameObject spots in roomSpots)
+        {
+            //既に配置済かどうか
+            bool match = false;
+
+            foreach (int doorNum in doorsPositionNumber)
             {
-                //既に配置済かどうか
-                bool match = false;
-
-                foreach (int doorNum in doorsPositionNumber)
+                if (spots.GetComponent<RoomSpot>().spotNum == doorNum)
                 {
-                    if (spots.GetComponent<RoomSpot>().spotNum == doorNum)
-                    {
-                        match = true;
-                        break;
-                    }
+                    match = true;
+                    break;
                 }
-
-                if (!match) Instantiate(
-                    dummyDoor, spots.transform.position, Quaternion.identity);
             }
+
+            if (!match) Instantiate(
+                dummyDoor, spots.transform.position, Quaternion.identity);
         }
     }
 }
