@@ -7,7 +7,7 @@ public class RoomManager : MonoBehaviour
     public static int[] itemsPositionNumber = { 0, 0, 0, 0, 0 }; //item position #
 
     public GameObject[] items = new GameObject[5]; //Array of Prefabs of items 
-    public GameObject room; //Prefab of room
+    public GameObject room; //Prefab of door
 
     public MessageData[] messages; //配置したドアに割り振るScritableObject
 
@@ -32,11 +32,11 @@ public class RoomManager : MonoBehaviour
             StartItemsPosition();
             positioned = true; //初回配置済にする
         }
-        else
+        else //初期配置済だった場合
         {
-            LoadKeysPosition();
-            LoadItemsPosition();
-            LoadDoorsPosition();
+            LoadKeysPosition(); //key配置の再現
+            LoadItemsPosition(); //アイテム配置の再現
+            LoadDoorsPosition(); //ドア配置の再現
         }
     }
 
@@ -44,7 +44,8 @@ public class RoomManager : MonoBehaviour
     {
         GameObject[] keySpots = GameObject.FindGameObjectsWithTag("KeySpot");
         //受け皿が配列の場合は、FindGameObjectsWithTag (Objects :"s"が付く）
-        int rand = Random.Range(1, keySpots.Length + 1); //1~3までの数字をランダム生成
+        int rand = Random.Range(1, (keySpots.Length + 1)); //1~3までの数字をランダム生成
+        Debug.Log("keySpots数" + keySpots.Length);
 
         //全てのkey1のスポットをチェックしに行く
         foreach (GameObject spots in keySpots)
@@ -176,11 +177,31 @@ public class RoomManager : MonoBehaviour
                         "Main",
                         false,
                         DoorDirection.down,
-                        messages[i]);
+                        messages[i]
+                        );
                 }
 
             }
         }
+        //ダミードア扉の生成
+        foreach(GameObject spots in roomSpots)
+        {
+            //既に配置済かどうか
+            bool match = false;
+
+            foreach(int doorNum in doorsPositionNumber)
+            {
+                if(spots.GetComponent<RoomSpot>().spotNum ==doorNum)
+                {
+                    match = true;
+                    break; 
+                }
+            }
+
+            if (!match) Instantiate(
+                dummyDoor, spots.transform.position, Quaternion.identity);
+        }
+
     }
     void DoorSetting(GameObject obj, string roomName, string nextRoomName, string sceneName, bool openedDoor, DoorDirection direction, MessageData messaage)
     {
@@ -203,7 +224,7 @@ public class RoomManager : MonoBehaviour
         //Keyが未取得だったら
         if (!GameManager.KeysPickedState[0])
         {
-            GameObject[] keySpots = GameObject.FindGameObjectWithTag("KeySpot");
+            GameObject[] keySpots = GameObject.FindGameObjectsWithTag("KeySpot");
 
             foreach (GameObject spots in keySpots)
             {
@@ -279,7 +300,53 @@ public class RoomManager : MonoBehaviour
 
         void LoadDoorsPosition()
         {
+            //全スポットの取得
+            GameObject[] roomSpots = GameObject.FindGameObjectsWithTag("RoomSpot");
 
+            for (int i = 0; i < doorsPositionNumber.Length; i++)
+            {
+
+                foreach (GameObject spots in roomSpots)
+                {
+                    if (spots.GetComponent<RoomSpot>().spotNum == doorsPositionNumber[i])
+                    {
+                        GameObject obj = Instantiate(
+                            room,
+                            spots.transform.position,
+                            Quaternion.identity
+                            );
+
+                        //生成したドアのセッティング
+                        DoorSetting(
+                            obj, "fromRoom" + (i + 1),
+                            "Room" + (i + 1),
+                            "Main",
+                            GameManager.doorsOpenedState[i], //i番目のドア開錠情報
+                            DoorDirection.down,
+                            messages[i]
+                            );
+                    }
+
+                }
+            }
+            //ダミードア扉の生成
+            foreach (GameObject spots in roomSpots)
+            {
+                //既に配置済かどうか
+                bool match = false;
+
+                foreach (int doorNum in doorsPositionNumber)
+                {
+                    if (spots.GetComponent<RoomSpot>().spotNum == doorNum)
+                    {
+                        match = true;
+                        break;
+                    }
+                }
+
+                if (!match) Instantiate(
+                    dummyDoor, spots.transform.position, Quaternion.identity);
+            }
         }
     }
 }
