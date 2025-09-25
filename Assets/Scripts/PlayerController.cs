@@ -20,6 +20,8 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rbody;
     Animator anime;
 
+    public bool isVirtual; 
+
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
@@ -76,9 +78,12 @@ public class PlayerController : MonoBehaviour
 
     public void Move()
     {
-        //axisHとaxisVにそれぞれHorizontalとVerticalの入力値を代入
-        axisH = Input.GetAxisRaw("Horizontal");
-        axisV = Input.GetAxisRaw("Vertical");
+        if(!isVirtual) //バーチャルパッドを触っていない場合はキーボード入力
+        {
+            //axisHとaxisVにそれぞれHorizontalとVerticalの入力値を代入
+            axisH = Input.GetAxisRaw("Horizontal");
+            axisV = Input.GetAxisRaw("Vertical");
+        }
     }
 
     //プレイヤーの角度を取得するメソッド
@@ -213,5 +218,22 @@ public class PlayerController : MonoBehaviour
     public void SpotLightCheck()
     {
         if (GameManager.hasSpotLight) spotLight.SetActive(true);
+    }
+
+    //バーチャルパッドの入力に反応するメソッド
+    public void SetAxis(float virH, float virV)
+    {
+        //どちからかの方向が押されたらvirtualパッドでの操作
+        if(virH !=0 || virV !=0)
+        {
+            isVirtual = true;
+            axisH = virH;
+            axisV = virV;
+        }
+        else
+        {
+            isVirtual = false;
+
+        }
     }
 }
