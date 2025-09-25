@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (GameManager.gameState != GameState.playing) return;
+        if (!(GameManager.gameState == GameState.playing || GameManager.gameState == GameState.ending)) return;
 
         Move();
         angleZ = GetAngle();
@@ -48,11 +48,9 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        if(GameManager.gameState == GameState.gameover)
-        {
-            GameOver(); 
-        }
-        if(inDamage) //inDamage flagがtrueの場合、何もしない
+        if (!(GameManager.gameState == GameState.playing || GameManager.gameState == GameState.ending)) return;
+
+        if (inDamage) //inDamage flagがtrueの場合、何もしない
         {
             //SInメソッドの角度情報にゲーム開始からの経過時間(Time.timeメソッド)を与える
             //timeを50倍する

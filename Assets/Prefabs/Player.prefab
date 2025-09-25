@@ -193,6 +193,7 @@ MonoBehaviour:
   playerSpeed: 3
   angleZ: -90
   spotLight: {fileID: 5270488705582795065}
+  isVirtual: 0
 --- !u!114 &2762606102054915237
 MonoBehaviour:
   m_ObjectHideFlags: 0
