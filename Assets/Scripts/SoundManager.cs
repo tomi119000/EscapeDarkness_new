@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -47,7 +47,9 @@ public class SoundManager : MonoBehaviour
         if (instance == null)
         {
             instance = this;
-            DontDestroyOnLoad(gameObject); // シーンが切り替わっても破棄されないようにする
+            DontDestroyOnLoad(gameObject); 
+            // シーンが切り替わっても破棄されないようにする
+            // シーンが切り替わっても音が（急に）止まらないように
         }
         else
         {

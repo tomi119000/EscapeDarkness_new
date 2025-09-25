@@ -20,7 +20,11 @@ public class PlayerController : MonoBehaviour
     Rigidbody2D rbody;
     Animator anime;
 
-    public bool isVirtual; 
+    public bool isVirtual;
+
+    //足音判定
+    float footstepInterval = 0.3f; //足音間隔
+    float footstepTimer; //時間計測
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -44,6 +48,9 @@ public class PlayerController : MonoBehaviour
         Move();
         angleZ = GetAngle();
         Animation();
+
+        //足音
+        HandleFootsteps();
     }
 
     private void FixedUpdate()
@@ -163,6 +170,8 @@ public class PlayerController : MonoBehaviour
     {
         if (GameManager.gameState != GameState.playing) return;
 
+        SoundManager.instance.SEPlay(SEType.Damage); //ダメージを受ける音
+
         GameManager.playerHP--; //playerHPを１減らす
 
         if(GameManager.playerHP > 0)
@@ -232,6 +241,26 @@ public class PlayerController : MonoBehaviour
         {
             isVirtual = false;
 
+        }
+    }
+
+    //足音
+    void HandleFootsteps()
+    {
+        //プレイヤーが動いていれば
+        if (axisH != 0 || axisV != 0)
+        {
+            footstepTimer += Time.deltaTime; //時間計測
+
+            if (footstepTimer >= footstepInterval) //インターバルチェック
+            {
+                SoundManager.instance.SEPlay(SEType.Walk);
+                footstepTimer = 0;
+            }
+        }
+        else //動いていなければ時間計測リセット
+        {
+            footstepTimer = 0f;
         }
     }
 }
