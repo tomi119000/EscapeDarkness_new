@@ -10,17 +10,19 @@ public enum DoorDirection //ここではup ,downに絞る
 
 public class RoomData : MonoBehaviour
 {
-    public string roomName;
-    public string nextRoomName;
-    public string nextScene;
-    public bool openedDoor;
-    public DoorDirection direction;
-    public MessageData message;
-    public GameObject door;
+    public string roomName; //出入口識別名
+    public string nextRoomName; //シーン切り替え先での行先
+    public string nextScene; //切り替え先シーン
+    public bool openedDoor; //ドア開閉状況フラグ
+    public DoorDirection direction; //プレイヤーの配置位置
+    public MessageData message; //トークデータ
+    public GameObject door; //表示非表示対象のドア情報
+
+    public bool isSavePoint; //セーブポイントに使われるスクリプトにするかどうか
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Player") && !isSavePoint)
         {
             ChangeScene();
         }

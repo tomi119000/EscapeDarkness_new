@@ -1,8 +1,8 @@
-using TMPro;
+﻿using TMPro;
 using UnityEngine;
 using System.Collections;
 
-public class SavaPoint : MonoBehaviour
+public class SavePoint : MonoBehaviour
 {
     bool isPlayerInRange; //プレイヤーが領域に入ったかどうか
     bool isTalk; //トークが開始されたかどうか
