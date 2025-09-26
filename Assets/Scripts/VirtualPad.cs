@@ -14,7 +14,7 @@ public class VirtualPad : MonoBehaviour
     {
         // プレイヤーキャラクターを取得
         player = GameObject.FindGameObjectWithTag("Player");
-        // タブの初期座標
+        // 操作タブの初期座標
         defPos = GetComponent<RectTransform>().localPosition;
     }
 

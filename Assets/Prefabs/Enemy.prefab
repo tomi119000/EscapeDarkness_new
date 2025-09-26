@@ -188,7 +188,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a5761a32ea2c98c47a85a5b48afc36db, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.5
-  reactionDistance: 4
-  arrangeId: 0
+  speed: 1.5
+  reactionDistance: 6
   onBarrier: 0
